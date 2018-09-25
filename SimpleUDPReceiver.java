@@ -1,5 +1,4 @@
 import java.net.*;
-import java.util.*;
 import java.nio.*;
 import java.util.zip.*;
 
@@ -7,10 +6,7 @@ public class SimpleUDPReceiver {
 
 	public static void main(String[] args) throws Exception 
 	{
-		if (args.length != 1) {
-			System.err.println("Usage: SimpleUDPReceiver <port>");
-			System.exit(-1);
-		}
+		checkArgs(args);
 		int port = Integer.parseInt(args[0]);
 		DatagramSocket sk = new DatagramSocket(port);
 		byte[] data = new byte[1500];
@@ -21,17 +17,13 @@ public class SimpleUDPReceiver {
 		{
 			pkt.setLength(data.length);
 			sk.receive(pkt);
-			if (pkt.getLength() < 8)
-			{
-				System.out.println("Pkt too short");
-				continue;
-			}
+			checkPacketLength(pkt, 8);
 			b.rewind();
 			long chksum = b.getLong();
 			crc.reset();
 			crc.update(data, 8, pkt.getLength()-8);
 			// Debug output
-			// System.out.println("Received CRC:" + crc.getValue() + " Data:" + bytesToHex(data, pkt.getLength()));
+			System.out.println("Received CRC:" + crc.getValue() + " Data:" + bytesToHex(data, pkt.getLength()));
 			if (crc.getValue() != chksum)
 			{
 				System.out.println("Pkt corrupt");
@@ -43,7 +35,20 @@ public class SimpleUDPReceiver {
 				DatagramPacket ack = new DatagramPacket(new byte[0], 0, 0,
 						pkt.getSocketAddress());
 				sk.send(ack);
-			}	
+			}
+		}
+	}
+
+	private static void checkPacketLength(DatagramPacket pkt, int lowerPacketLimit) {
+		if (pkt.getLength() < lowerPacketLimit) {
+			System.out.println("Pkt too short");
+		}
+	}
+
+	private static void checkArgs(String[] args) {
+		if (args.length != 1) {
+			System.err.println("Usage: SimpleUDPReceiver <port>");
+			System.exit(-1);
 		}
 	}
 

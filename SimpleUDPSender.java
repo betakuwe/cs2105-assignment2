@@ -7,10 +7,7 @@ public class SimpleUDPSender {
 
 	public static void main(String[] args) throws Exception 
 	{
-		if (args.length != 3) {
-			System.err.println("Usage: SimpleUDPSender <host> <port> <num_pkts>");
-			System.exit(-1);
-		}
+		checkArgs(args);
 
 		InetSocketAddress addr = new InetSocketAddress(args[0], Integer.parseInt(args[1]));
 		int num = Integer.parseInt(args[2]);
@@ -35,8 +32,15 @@ public class SimpleUDPSender {
 
 			pkt = new DatagramPacket(data, data.length, addr);
 			// Debug output
-			//System.out.println("Sent CRC:" + chksum + " Contents:" + bytesToHex(data));
+			System.out.println("Sent CRC:" + chksum + " Contents:" + bytesToHex(data));
 			sk.send(pkt);
+		}
+	}
+
+	private static void checkArgs(String[] args) {
+		if (args.length != 3) {
+			System.err.println("Usage: SimpleUDPSender <host> <port> <num_pkts>");
+			System.exit(-1);
 		}
 	}
 
