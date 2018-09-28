@@ -36,6 +36,7 @@ public class SimpleUDPReceiver {
 						pkt.getSocketAddress());
 				sk.send(ack);
 			}
+			System.out.println();
 		}
 	}
 
