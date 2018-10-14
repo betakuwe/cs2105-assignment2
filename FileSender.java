@@ -7,7 +7,6 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.CRC32;
