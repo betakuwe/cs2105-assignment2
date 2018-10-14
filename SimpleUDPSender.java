@@ -5,7 +5,7 @@ import java.util.zip.*;
 
 public class SimpleUDPSender {
 
-	public static void main(String[] args) throws Exception 
+	public static void main(String[] args) throws Exception
 	{
 		checkArgs(args);
 
@@ -32,8 +32,13 @@ public class SimpleUDPSender {
 
 			pkt = new DatagramPacket(data, data.length, addr);
 			// Debug output
-			System.out.println("Sent CRC:" + chksum + " Contents:" + bytesToHex(data));
+			System.out.println("sent pkt " + i);
+//			System.out.println("Sent CRC:" + chksum + " Contents:" + bytesToHex(data));
 			sk.send(pkt);
+			byte[] ack = new byte[1];
+			DatagramPacket receivedPkt = new DatagramPacket(ack, 1);
+			sk.receive(receivedPkt);
+			System.out.println("Received ack " + ack[0]);
 		}
 	}
 
