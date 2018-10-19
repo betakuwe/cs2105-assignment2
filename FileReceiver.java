@@ -39,6 +39,8 @@ public class FileReceiver {
     private int lastPacketDataLength;
     private BufferedOutputStream outputStream;
 
+    private boolean lastPacketWritten;
+
     public FileReceiver(int port) {
         this.port = port;
         tree = new TreeSet<>();
@@ -47,11 +49,12 @@ public class FileReceiver {
         crc = new CRC32();
         isAddressSet = false;
         expectedDataIndex = 0;
+        lastPacketWritten = false;
     }
 
     public static void main(String[] args) {
         if (args.length != 1) {
-            System.err.println("Usage: HardFileReceiver <port>");
+            System.err.println("Usage: FileReceiver <port>");
             System.exit(-1);
         }
 
@@ -67,7 +70,7 @@ public class FileReceiver {
         socket = new DatagramSocket(port);
         socket.setReceiveBufferSize(Integer.MAX_VALUE);
         socket.setSendBufferSize(Integer.MAX_VALUE);
-        while (true) {
+        while (!lastPacketWritten) {
             receivePacket();
             int diff = segment.getIndex() - expectedDataIndex;
             if (diff < MAX_DATA_SEGMENTS && isValidPacket()) {
@@ -85,6 +88,7 @@ public class FileReceiver {
 
             }
         }
+        socket.close();
     }
 
     private void writeSubsequentPackets() throws IOException {
@@ -118,6 +122,7 @@ public class FileReceiver {
     private void writeLastPacket() throws IOException {
         outputStream.write(data, DATA_POS, lastPacketDataLength);
         outputStream.flush();
+        lastPacketWritten = true;
     }
 
     private void writeRemainingPacket() throws IOException {

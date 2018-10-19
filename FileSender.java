@@ -56,7 +56,7 @@ public class FileSender {
 
     public static void main(String[] args) {
         if (args.length != 4) {
-            System.err.println("Usage: HardFileSender <host> <port> <src> <dest>");
+            System.err.println("Usage: FileSender <host> <port> <src> <dest>");
             System.exit(-1);
         }
 
@@ -181,8 +181,8 @@ public class FileSender {
         socket.setSendBufferSize(Integer.MAX_VALUE);
         socket.setReceiveBufferSize(Integer.MAX_VALUE);
     }
+
     class SendPacketTask extends TimerTask {
-        private int times; //TODO REMOVE
         private IndexedDatagramPacket indexedPacket;
 
         public SendPacketTask(IndexedDatagramPacket indexedPacket) {
